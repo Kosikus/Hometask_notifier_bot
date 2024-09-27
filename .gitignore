@@ -1,0 +1,27 @@
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Файлы IDE
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Логи
+log/*
+*.log
+
+# Секретные файлы и конфигурации
+config/secrets.yml
+config/database.yml
+.env
+
+# Временные файлы
+tmp/
+
+# разные файлы
+/*.bat
+
+# Папку data сохраняем, но игнорируем всё внутри
+/data/*
+!/data/.keep
