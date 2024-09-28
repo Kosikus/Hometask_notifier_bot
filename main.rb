@@ -85,12 +85,12 @@ end
 def send_notification(bot, user, mail, base_timezone)
   text_content = generate_mail_content(mail)
   tg_message = "От: #{mail.from.first}\n" +
-               "Кому: #{mail.from.first}\n" +
-               "Тема: #{mail.subject}\n" +
+               "Кому: #{mail.to.first}\n" +
+               "<b>Тема: #{mail.subject}</b>\n" +
                "Дата: #{format_mail_date(mail.date, base_timezone)}\n" +
-               "Тело: #{text_content}"
+               "Тело:\n#{text_content}"
 
-  bot.api.send_message(chat_id: user[:telegram_id], text: tg_message + "-" * 50)
+  bot.api.send_message(chat_id: user[:telegram_id], text: tg_message + "-" * 50, parse_mode: 'HTML')
 end
 
 # Генерация текстового контента из письма
@@ -99,7 +99,13 @@ def generate_mail_content(mail)
   doc = Nokogiri::HTML(html_content, nil, 'UTF-8')
   text_content = doc.xpath('//text()').map(&:text).join("\n")
   text_content = text_content.gsub("\u00A0", ' ')
-  Sanitize.clean(text_content)
+
+  content = Sanitize.clean(text_content)
+  if content.size > 500
+    content[0,500] + "\n\n" + "-----&ltчасть сообщения скрыта&gt-----" + "\n"
+  else
+    content[0, 500] + "\n"  
+  end
 end
 
 # Создаем планировщик
@@ -108,12 +114,13 @@ scheduler = Rufus::Scheduler.new
 # Подключаемся к почтовому серверу Yandex один раз
 imap = Net::IMAP.new('imap.yandex.ru', port: 993, ssl: true)
 imap.login(username, password)
-imap.select(sent_folder)
 
 # Запускаем бота и планировщик в одном потоке
 Telegram::Bot::Client.run(TOKEN) do |bot|
-  # Планировщик проверяет почту каждые 15 секунд
-  scheduler.every '5m' do
+  # Планировщик проверяет почту каждые 5 минут
+  scheduler.every '15s' do
+    imap.select(sent_folder)
+
     # Определяем время начала предыдущего дня
     now = Time.now
     yesterday = base_timezone.local(now.year, now.month, now.day).yesterday
@@ -134,28 +141,28 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
       users.each do |user|
         # перевод даты отправки письма в базовую временную зону
         mail_date = mail.date.in_time_zone(base_timezone)
-        user_timezone = ActiveSupport::TimeZone[user[:time_zone]] #?????????????????
+        user_timezone = ActiveSupport::TimeZone[user[:time_zone]]
 
         last_message_send = user[:last_message_send] ? Time.parse(user[:last_message_send]) : nil
 
         next if !user[:active] ||
                 !mail.to.include?(user[:email]) ||
-                (last_message_send.nil? || mail_date < last_message_send) ||
+                (mail_date <= last_message_send) || # считанное письмо старое
                 !(notification_time?(now_in_tz, user[:weekend_notification_time][:start], user[:weekend_notification_time][:end], user_timezone) ||
                 notification_time?(now_in_tz, user[:weekday_notification_time][:start], user[:weekday_notification_time][:end], user_timezone))
 
-        # Проверка времени уведомлений
+        # Проверка времени уведомленийru
         if (now_in_tz.saturday? || now_in_tz.sunday?) &&
            notification_time?(now_in_tz, user[:weekend_notification_time][:start], user[:weekend_notification_time][:end], user_timezone)
           send_notification(bot, user, mail, base_timezone)
           send_notification(bot, {telegram_id: MY_TG_ID}, mail, base_timezone)
           # Обновляем last_message_send
-          update_last_message_send(json_file_path, user[:id], now_in_tz)
+          update_last_message_send(json_file_path, user[:id], mail_date)
         elsif notification_time?(now_in_tz, user[:weekday_notification_time][:start], user[:weekday_notification_time][:end], user_timezone)
           send_notification(bot, user, mail, base_timezone)
           send_notification(bot, {telegram_id: MY_TG_ID}, mail, base_timezone)
           # Обновляем last_message_send
-          update_last_message_send(json_file_path, user[:id], now_in_tz)
+          update_last_message_send(json_file_path, user[:id], mail_date)
         end
       end
     end
