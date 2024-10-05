@@ -10,6 +10,8 @@ Thumbs.db
 # Логи
 log/*
 *.log
+app/log/*
+!app/log/.keep
 
 # Секретные файлы и конфигурации
 config/secrets.yml
@@ -23,5 +25,5 @@ tmp/
 /*.bat
 
 # Папку data сохраняем, но игнорируем всё внутри
-/data/*
-!/data/.keep
+/app/data/*
+!app/data/.keep
