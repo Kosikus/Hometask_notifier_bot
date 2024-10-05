@@ -1,7 +1,7 @@
 # Временная зона для rufus-scheduler
 ENV['TZ'] = 'Europe/Moscow'
 
-ROOT_PATH = File.expand_path('../', __dir__)
+ROOT_PATH = File.expand_path('.', __dir__)
 USERS_DATA_FILE_PATH = File.join(ROOT_PATH, 'app/data/students_info.json')
 
 require 'json'
@@ -22,12 +22,11 @@ require 'i18n'
 require File.join(ROOT_PATH, 'app/config/app_config.rb')
 
 # Загрузка переменных окружения
-Dotenv.load
+Dotenv.load(File.join(ROOT_PATH, '.env'))
 
 require File.join(ROOT_PATH, 'app/services/localization_service.rb')
 require File.join(ROOT_PATH, 'app/services/logger_service.rb')
 require File.join(ROOT_PATH, 'app/services/mail_service.rb')
-require File.join(ROOT_PATH, 'app/services/notification_service.rb')
 require File.join(ROOT_PATH, 'app/services/notification_service.rb')
 require File.join(ROOT_PATH, 'app/bot/email_notifier_bot.rb')
 require File.join(ROOT_PATH, 'app/managers/user_manager.rb')
