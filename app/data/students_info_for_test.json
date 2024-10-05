@@ -1,0 +1,38 @@
+[
+  {
+    "id": 0,
+    "active": true,
+    "first_name": "Константин",
+    "last_name": "Голуб",
+    "email": "ne-veshay-nos@yandex.ru",
+    "telegram_id": 378860110,
+    "weekday_notification_time": {
+      "start": "03:24",
+      "end": "22:00"
+    },
+    "weekend_notification_time": {
+      "start": "10:00",
+      "end": "22:00"
+    },
+    "last_message_send": "2024-09-27T19:47:35+03:00",
+    "time_zone": "Europe/Moscow"
+  },
+  {
+    "id": 1,
+    "active": true,
+    "first_name": "Вася",
+    "last_name": "Петров",
+    "email": "vasya@mail.ru",
+    "telegram_id": 777000,
+    "weekday_notification_time": {
+      "start": "09:00",
+      "end": "22:00"
+    },
+    "weekend_notification_time": {
+      "start": "10:00",
+      "end": "22:00"
+    },
+    "last_message_send": "2024-09-25T15:30:00+03:00",
+    "time_zone": "America/Los_Angeles"
+  }
+]

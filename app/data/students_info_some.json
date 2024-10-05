@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "active": true,
+    "first_name": "Всеволод",
+    "last_name": "Алексашин",
+    "email": "ne-veshay-nos@yandex.ru",
+    "telegram_id": 378860110,
+    "weekday_notification_time": {
+      "start": "07:00",
+      "end": "20:00"
+    },
+    "weekend_notification_time": {
+      "start": "00:00",
+      "end": "24:00"
+    },
+    "last_message_send": "2024-10-05T04:07:21+03:00",
+    "time_zone": "Europe/Moscow"
+  },
+  {
+    "id": 2,
+    "active": true,
+    "first_name": "Всеволод",
+    "last_name": "Алексашин",
+    "email": "ne-veshay-nos@mail.ru",
+    "telegram_id": 378860110,
+    "weekday_notification_time": {
+      "start": "07:00",
+      "end": "20:00"
+    },
+    "weekend_notification_time": {
+      "start": "00:00",
+      "end": "24:00"
+    },
+    "last_message_send": "2024-09-28T15:34:55+03:00",
+    "time_zone": "Europe/Moscow"
+  },
+  {
+    "id": 3,
+    "active": true,
+    "first_name": "Всеволод",
+    "last_name": "Алексашин",
+    "email": "ne-veshay-nos@bk.ru",
+    "telegram_id": 378860110,
+    "weekday_notification_time": {
+      "start": "07:00",
+      "end": "20:00"
+    },
+    "weekend_notification_time": {
+      "start": "00:00",
+      "end": "24:00"
+    },
+    "last_message_send": "2024-09-28T15:34:55+03:00",
+    "time_zone": "Europe/Moscow"
+  }
+]
