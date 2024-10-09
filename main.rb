@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Временная зона для rufus-scheduler
 ENV['TZ'] = 'Europe/Moscow'
 

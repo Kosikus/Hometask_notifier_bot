@@ -1,7 +1,8 @@
 class NotificationService
   # оправка оповещений в тг-бот
   def self.send_notifications(bot, users, mails)
-  	# TODO
+  	sent_email_count = 0
+
     users.each do |user|
       mails.each do |mail|
         next unless eligible_for_notification?(Time.now.in_time_zone(AppConfig.admin_time_zone), user, mail)
@@ -14,10 +15,14 @@ class NotificationService
           mail.date.in_time_zone(AppConfig.admin_time_zone)
         )
 
+        sent_email_count += 1
+
         sleep(2)
         send_notification(bot, {id: "_admin", telegram_id: AppConfig.admin_tg_id}, mail) # для меня
       end
     end
+
+    LoggerService.info("Было отправлено #{sent_email_count} tg-оповещений")
   end
 
   # подходит письмо для оповещения?

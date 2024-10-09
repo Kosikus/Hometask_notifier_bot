@@ -2,7 +2,7 @@ class EmailNotifierBot
   def initialize
     LoggerService.info("***** Запуск программы *****")
 
-  	@scheduler = Rufus::Scheduler.new
+    @scheduler = Rufus::Scheduler.new
     retries = 0
 
     begin
@@ -12,11 +12,8 @@ class EmailNotifierBot
     rescue StandardError => e
       LoggerService.error("Ошибка при подключению к боту.")
       LoggerService.error("Подробности: #{e.message}")
-<<<<<<< HEAD
+
       # LoggerService.debug(e.backtrace.join('\n'))
-=======
-      LoggerService.debug(e.backtrace.join('\n'))
->>>>>>> af7d03697e6f0dad7d4c62e67334171ebe0470cf
 
       if retries < AppConfig.max_bot_connection_retries
         retries += 1
@@ -43,8 +40,8 @@ class EmailNotifierBot
   	  handle_bot_commands(message)
   	end
 
-  	@imap.logout
-  	@imap.disconnect
+    @imap.logout
+    @imap.disconnect
   end
 
   def check_mail
