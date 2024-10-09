@@ -1,10 +1,10 @@
 class LoggerService
   def self.logger
     unless @logger
-      File.delete(File.join(ROOT_PATH, AppConfig.log_file_path)) if File.exist?(File.join(ROOT_PATH, AppConfig.log_file_path))
+      # File.delete(File.join(ROOT_PATH, AppConfig.log_file_path)) if File.exist?(File.join(ROOT_PATH, AppConfig.log_file_path))
       @logger = Logger.new(File.join(ROOT_PATH, AppConfig.log_file_path), 10, 10 * 1000 * 1024)
 
-      @logger << "# Logfile created on #{Time.now.in_time_zone(AppConfig.admin_time_zone)}\n"
+      @logger << "\n\n# Logfile created on #{Time.now.in_time_zone(AppConfig.admin_time_zone)}\n"
       
       # Настройка форматирования логов
       @logger.formatter = proc do |severity, datetime, progname, msg|
