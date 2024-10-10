@@ -53,12 +53,13 @@ class MailService
 
     LoggerService.info("Попытка подключения к папке 'SENT' \"#{AppConfig.email_sent_folder}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
 
-    imap = connect if imap.disconnected?
-
     begin
   	  imap.select(AppConfig.email_sent_folder)
     rescue => e
       LoggerService.warn("Ошибка подключения к папке 'SENT' \"#{e.message}\"")
+      imap = connect if imap.disconnected?
+
+      retry
     end    
 
     LoggerService.info("Успешно: подключение к папке 'SENT' \"#{AppConfig.email_sent_folder}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
@@ -66,15 +67,22 @@ class MailService
   	search_criteria = ['SINCE', since_date.strftime("%d-%b-%Y")]
     # search_criteria = ['UNSEEN']
 
-    LoggerService.info("Поиск писем по критерию \"#{search_criteria}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
+    LoggerService.info("поиск писем по критерию \"#{search_criteria}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
 
-    mails = 
-    imap.search(search_criteria).map do |msg_id|
-    	msg = imap.fetch(msg_id, 'RFC822')[0].attr['RFC822']
-    	Mail.read_from_string(msg)
+    begin
+      mails =
+      imap.search(search_criteria).map do |msg_id|
+      	msg = imap.fetch(msg_id, 'RFC822')[0].attr['RFC822']
+      	Mail.read_from_string(msg)
+      end
+    rescue => e
+      LoggerService.info("неудачно: поиск писем по критерию: #{e.message}")
+      imap = connect if imap.disconnected?
+
+      retry
     end
 
-    offset = since_date.in_time_zone(AppConfig.admin_time_zone).strftime("%:z").to_i
+    offset = since_date.in_time_zone(AppConfig.admin_time_zone).strftime('%:z').to_i
     LoggerService.info("Найдено #{mails.size} писем на сервере, начиная с #{since_date.in_time_zone(AppConfig.admin_time_zone).strftime("%d-%b-%Y #{offset}:00:00 %z")}")
 
     mails
