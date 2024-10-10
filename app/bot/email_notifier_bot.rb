@@ -53,13 +53,13 @@ class EmailNotifierBot
   end
 
   def handle_bot_commands(message)
-    case message
+    case message.text
     when '/start'
-      @bot.api.sendmessage(chat_id: message.chat_id, text: "Привет! Я бот, который уведомит тебя о новых письмах.")
+      @bot.api.send_message(chat_id: message.chat.id, text: "Привет! Я бот, который уведомит об отправлении тебе домашнего задания.")
     when '/say_hello'
-      @bot.api.sendmessage(chat_id: message.chat_id, text: "Привет, #{message.from.first_name}!")
+      @bot.api.send_message(chat_id: message.chat.id, text: "Привет, #{message.from.first_name}!")
     else
-      @bot.api.sendmessage(chat_id: message.chat_id, text: "Неизвестная команда")
+      @bot.api.send_message(chat_id: message.chat.id, text: "Неизвестная команда")
     end
   end
 end
