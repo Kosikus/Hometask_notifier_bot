@@ -50,19 +50,17 @@ class MailService
   end
 
   def self.fetch_messages(imap, since_date)
-
     LoggerService.info("Попытка подключения к папке 'SENT' \"#{AppConfig.email_sent_folder}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
     imap = connect if imap.disconnected?
 
-
-    # begin
-  	#   imap.select(AppConfig.email_sent_folder)
-    # rescue => e
-    #   LoggerService.warn("Ошибка подключения к папке 'SENT' \"#{e.message}\"")
-    #   imap = connect if imap.disconnected?
-
-    #   retry
-    # end
+    begin
+  	  imap.select(AppConfig.email_sent_folder)
+    rescue => e
+      LoggerService.warn("Ошибка подключения к папке 'SENT' \"#{e.message}\"")
+      sleep(AppConfig.imap_connection_retry_delay)
+      imap = connect if imap.disconnected?
+      retry
+    end
 
     LoggerService.info("Успешно: подключение к папке 'SENT' \"#{AppConfig.email_sent_folder}\" на сервере \"#{AppConfig.imap_host}\" - \"#{AppConfig.email_user_name}\"")
 
@@ -79,8 +77,8 @@ class MailService
       end
     rescue => e
       LoggerService.info("неудачно: поиск писем по критерию: #{e.message}")
+      sleep(AppConfig.imap_connection_retry_delay)
       imap = connect if imap.disconnected?
-
       retry
     end
 
